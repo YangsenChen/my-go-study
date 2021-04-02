@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="file" name="photo" id="photo" value="" placeholder="免冠照片" onchange="showImg(this)">
+<div id="imgContainer" style="margin-top: 10px;"></div>
+
+<input type="button" onclick="postData();" value="下一步" name="" style="width:100px;height:30px;">
+</body>
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+    function postData(){
+        var formData = new FormData();
+        formData.append("image",$("#photo")[0].files[0]);
+        // formData.append("service",'App.Passion.UploadFile');
+        // formData.append("token",token);
+        $.ajax({
+            url:'upload/', /*接口域名地址*/
+            type:'post',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success:function(res){
+                console.log(res.data);
+                // if(res.data["code"]=="succ"){
+                //     alert('成功');
+                // }else if(res.data["code"]=="err"){
+                //     alert('失败');
+                // }else{
+                //     console.log(res);
+                // }
+            }
+        })
+    }
+    function showImg(obj) {
+        var files = obj.files
+        // document.getElementById("imgContainer").innerHTML = getImgsByUrl(files)
+        getImgsByFileReader(document.getElementById("imgContainer"), files)
+    }
+
+    // 使用FileReader读取file实例并显示图片
+    function getImgsByFileReader(el, files) {
+        for (var i = 0; i < files.length; i++) {
+            let img = document.createElement('img')
+            img.setAttribute('style', 'width: 400px; height: 400px; vertical-align: middle; margin-right: 5px;')
+            el.appendChild(img)
+            var reader = new FileReader()
+            reader.onload = function(e) {
+                img.src = e.target.result
+            }
+            reader.readAsDataURL(files[i])
+        }
+    }
+    </script>
+</html>
