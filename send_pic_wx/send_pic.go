@@ -2,13 +2,17 @@ package main;
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
 )
-
+type ret struct{
+	Res int
+	Name string//注意必须首字母是大写，否则就穿不出去
+}
 func main() {
 	http.HandleFunc("/",welcome)
 	http.HandleFunc("/upload", uploadHandle) // 上传
@@ -45,6 +49,13 @@ func uploadHandle (w http.ResponseWriter, req *http.Request) {
 		f, _ := os.OpenFile("xx.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
 		defer f.Close()
 		f.Write(dist)
+		//rets:=make([]ret,0)
+		var r ret
+		r.Res=1
+		r.Name="hahah"
+		jsonr,_:=json.Marshal(r)
+		fmt.Fprintf(w, string(jsonr))
+		//rets=append(rets)
 		//// 检查图片后缀
 		//ext := strings.ToLower(path.Ext(handle.Filename))
 		//if ext != ".jpg" && ext != ".png" {
